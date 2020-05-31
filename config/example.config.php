@@ -21,6 +21,7 @@ $headerName = 'pmsfopole';
 $headerImage = 'custom/headerimage.png';
 
 $footer = true;
+$footerIcons = true;
 
 
 /* Urls */
@@ -56,6 +57,23 @@ $raidPage = true;
 $rewardPage = true;
 $invasionPage = true;
 $shinyPage = false;   // Does not work for mad yet.
+
+
+/* Geofences */
+$geofenceDefault = 'All Areas';
+$geofences = [
+  "All" => "All Areas",
+
+  "lat1 lon1,
+   lat2 lon2,
+   lat3 lon3,
+   lat1 lon1" => "Area 1",
+
+  "lat  lon,
+   lat2 lon2,
+   lat3 lon3,
+   lat1 lon1" => "Area 2"
+];
 
 
 /* Database Settings */

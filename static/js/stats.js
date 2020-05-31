@@ -109,20 +109,22 @@ if (pokemonPage && getPage === 'pokemon') {
   })
 }
 
-
+initSettings()
 updateStats()
 window.setInterval(updateStats, queryDelay * 1000)
 
-
 var rawDataIsLoading = false
 function loadRawData() {
+  var geofence = Store.get('geofence')
+
   return $.ajax({
     url: 'raw_data',
     type: 'POST',
     timeout: 7500,
     data: {
       token: token,
-      getPage: getPage
+      getPage: getPage,
+      geofence: geofence
     },
     cache: false,
     dataType: 'json',
@@ -206,18 +208,22 @@ function processRewards(i, item) {
     item['quest_pokemon_form'] = '00'
   }
   var reward = ''
+  var type = ''
   if (item['quest_pokemon_id'] > 0) {
     reward = '<img src="' + pokemonIconPath + 'pokemon_icon_' + item['quest_pokemon_id'] + '_' + item['quest_pokemon_form'] + '.png" class="tableIcon">' +
     '<br>' + item['name']
+    type = i8ln('Pokémon')
   } else if (item['quest_item_id'] > 0) {
     reward = '<img src="' + itemIconPath + 'reward_' + item['quest_item_id'] + '_' + item['quest_reward_amount'] + '.png" class="tableIcon">' +
     '<br>' + item['name']
+    type = i8ln('Item')
   } else {
     reward = '<img src="' + itemIconPath + 'reward_stardust_' + item['quest_reward_amount'] + '.png" class="tableIcon">' +
     '<br>' + item['name']
+    type = i8ln('Stardust')
   }
   rewardTable.row.add([
-    item['type'],
+    type,
     reward,
     item['count'],
     item['percentage']
@@ -277,7 +283,7 @@ function processPokemon(i, item) {
   var types = item['pokemon_types']
   var typeDisplay = ''
   $.each(types, function (index, type) {
-    typeDisplay += type['type'] + '<br>'
+    typeDisplay += i8ln(type['type']) + '<br>'
   })
   pokemonTable.row.add([
     item['pokemon_id'],
@@ -286,6 +292,12 @@ function processPokemon(i, item) {
     item['count'],
     item['percentage']
   ]).draw(false)
+}
+
+function initSettings() {
+  if (Store.get('geofence')) {
+    $('#geofence').val(Store.get('geofence'))
+  }
 }
 
 function updateStats() {
@@ -341,3 +353,11 @@ function i8ln(word) {
     return word
   }
 }
+
+$(function () {
+  $('#geofence').change(function () {
+    var geofence = this.value
+    Store.set('geofence', geofence)
+    updateStats()
+  })
+})
